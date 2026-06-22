@@ -179,7 +179,7 @@
 </head>
 <body>
 
-  <div id="tap-screen" style="display:none" onclick="unlockFromTap()">
+  <div id="tap-screen" onclick="unlockFromTap()">
     <span>tap</span>
   </div>
   <canvas id="confetti-canvas"></canvas>
@@ -318,16 +318,7 @@
       document.getElementById('tap-screen').style.display = 'none';
     }
 
-    window.addEventListener('load', () => {
-      startExperience();
-      const audio = document.getElementById('bg-audio');
-      audio.play().then(() => {
-        // autoplay worked (Android/desktop) — no tap screen needed
-      }).catch(() => {
-        // blocked (iOS) — show tap screen
-        document.getElementById('tap-screen').style.display = 'flex';
-      });
-    });
+    window.addEventListener('load', startExperience);
   </script>
 </body>
 </html>
