@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Happy Father's Day!</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100dvh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Georgia', serif;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    #tap-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: pointer;
+    }
+
+    #tap-screen .tap-emoji {
+      font-size: 80px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    #tap-screen .tap-text {
+      color: #fff;
+      font-size: 26px;
+      margin-top: 20px;
+      text-align: center;
+      padding: 0 30px;
+      opacity: 0.9;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    canvas#confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .content {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .crown {
+      font-size: 90px;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(255,215,0,0.8));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(-5deg); }
+      50% { transform: translateY(-18px) rotate(5deg); }
+    }
+
+    .headline {
+      font-size: clamp(38px, 11vw, 62px);
+      font-weight: bold;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #FFD700, #FFA500, #FF6B35, #FFD700);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s ease-in-out infinite;
+      text-shadow: none;
+      letter-spacing: -1px;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .subtitle {
+      font-size: clamp(18px, 5vw, 26px);
+      color: #c8d8f0;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: fadeInUp 1s ease 0.5s both;
+    }
+
+    .hearts {
+      display: flex;
+      gap: 12px;
+      font-size: 36px;
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      14% { transform: scale(1.2); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.15); }
+      56% { transform: scale(1); }
+    }
+
+    .message-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 20px;
+      padding: 22px 28px;
+      max-width: 360px;
+      width: 90%;
+    }
+
+    .message-card p {
+      color: #e8f0ff;
+      font-size: clamp(15px, 4vw, 19px);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .stars {
+      display: flex;
+      gap: 8px;
+      font-size: 28px;
+      animation: spin-stars 4s linear infinite;
+    }
+
+    @keyframes spin-stars {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .music-note {
+      font-size: 40px;
+      animation: bounce-note 0.8s ease-in-out infinite alternate;
+      color: #FFD700;
+    }
+
+    @keyframes bounce-note {
+      from { transform: translateY(0) rotate(-10deg); }
+      to { transform: translateY(-12px) rotate(10deg); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .firework-btn {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      border: none;
+      border-radius: 50px;
+      padding: 16px 40px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #1a1a2e;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(255,165,0,0.5);
+      transition: transform 0.1s, box-shadow 0.1s;
+      touch-action: manipulation;
+    }
+
+    .firework-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 10px rgba(255,165,0,0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="tap-screen" onclick="startExperience()">
+    <div class="tap-emoji">👨‍👦</div>
+    <div class="tap-text">Tap to open your Father's Day surprise! 🎉</div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+  <audio id="bg-audio" loop>
+    <source src="audio.m4a" type="audio/mp4" />
+  </audio>
+
+  <div class="content">
+    <div class="crown">👑</div>
+
+    <div class="headline">Happy<br>Father's Day!</div>
+    <div class="subtitle">To the World's Best Dad</div>
+
+    <div class="hearts">❤️ 🧡 💛 💚 💙 💜</div>
+
+    <div class="message-card">
+      <p>You are appreciated, loved, and celebrated every single day — but today especially, you deserve all the confetti in the world! 🎊</p>
+    </div>
+
+    <div class="stars">⭐ 🌟 ✨ 🌟 ⭐</div>
+
+    <div class="music-note">🎵</div>
+
+    <button class="firework-btn" onclick="burst()">🎆 More Confetti!</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animFrame;
+    let burstActive = false;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLORS = [
+      '#FFD700','#FFA500','#FF6B35','#FF4B8B',
+      '#9B59B6','#3498DB','#2ECC71','#E91E63',
+      '#00BCD4','#FF5722','#CDDC39','#fff'
+    ];
+
+    function randomRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createParticle(x, y, burst) {
+      const angle = burst
+        ? randomRange(0, Math.PI * 2)
+        : randomRange(0, Math.PI * 2);
+      const speed = burst ? randomRange(4, 14) : randomRange(1, 5);
+      return {
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: burst ? Math.sin(angle) * speed : randomRange(-6, -2),
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        size: randomRange(6, 14),
+        rotation: randomRange(0, Math.PI * 2),
+        rotSpeed: randomRange(-0.15, 0.15),
+        shape: Math.random() > 0.4 ? 'rect' : 'circle',
+        gravity: 0.25,
+        drag: 0.99,
+        life: 1,
+        decay: randomRange(0.008, 0.018)
+      };
+    }
+
+    function spawnConfetti() {
+      for (let i = 0; i < 8; i++) {
+        particles.push(createParticle(
+          randomRange(0, canvas.width),
+          -10,
+          false
+        ));
+      }
+    }
+
+    function burst() {
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      for (let i = 0; i < 160; i++) {
+        particles.push(createParticle(cx, cy, true));
+      }
+    }
+
+    function drawParticle(p) {
+      ctx.save();
+      ctx.globalAlpha = p.life;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    let spawnTimer = 0;
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      spawnTimer++;
+      if (spawnTimer % 4 === 0) spawnConfetti();
+
+      particles = particles.filter(p => p.life > 0);
+
+      for (const p of particles) {
+        p.vy += p.gravity;
+        p.vx *= p.drag;
+        p.vy *= p.drag;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotSpeed;
+        p.life -= p.decay;
+        drawParticle(p);
+      }
+
+      animFrame = requestAnimationFrame(loop);
+    }
+
+    function startExperience() {
+      document.getElementById('tap-screen').style.display = 'none';
+      const audio = document.getElementById('bg-audio');
+      audio.play().catch(() => {});
+      burst();
+      loop();
+      setInterval(burst, 8000);
+    }
+  </script>
+</body>
+</html>
