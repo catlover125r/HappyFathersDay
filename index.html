@@ -20,6 +20,24 @@
     }
 
 
+    #tap-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: pointer;
+    }
+
+    #tap-screen span {
+      color: #fff;
+      font-size: 48px;
+      font-family: 'Georgia', serif;
+      letter-spacing: 6px;
+    }
+
     canvas#confetti-canvas {
       position: fixed;
       top: 0; left: 0;
@@ -161,6 +179,9 @@
 </head>
 <body>
 
+  <div id="tap-screen" style="display:none" onclick="unlockFromTap()">
+    <span>tap</span>
+  </div>
   <canvas id="confetti-canvas"></canvas>
   <audio id="bg-audio" loop>
     <source src="audio.m4a" type="audio/mp4" />
@@ -289,23 +310,24 @@
       burst();
       loop();
       setInterval(burst, 8000);
+    }
+
+    function unlockFromTap() {
       const audio = document.getElementById('bg-audio');
       audio.play().catch(() => {});
+      document.getElementById('tap-screen').style.display = 'none';
     }
 
-    function unlockAudio() {
+    window.addEventListener('load', () => {
+      startExperience();
       const audio = document.getElementById('bg-audio');
-      if (audio.paused) {
-        audio.play().then(() => {
-          document.removeEventListener('touchstart', unlockAudio);
-          document.removeEventListener('click', unlockAudio);
-        }).catch(() => {});
-      }
-    }
-
-    window.addEventListener('load', startExperience);
-    document.addEventListener('touchstart', unlockAudio);
-    document.addEventListener('click', unlockAudio);
+      audio.play().then(() => {
+        // autoplay worked (Android/desktop) — no tap screen needed
+      }).catch(() => {
+        // blocked (iOS) — show tap screen
+        document.getElementById('tap-screen').style.display = 'flex';
+      });
+    });
   </script>
 </body>
 </html>
