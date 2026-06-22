@@ -156,28 +156,12 @@
       box-shadow: 0 2px 10px rgba(255,165,0,0.4);
     }
 
-    #music-hint {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,215,0,0.4);
-      border-radius: 50px;
-      padding: 10px 22px;
-      color: #FFD700;
-      font-size: 15px;
-      z-index: 20;
-      pointer-events: none;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
+
   </style>
 </head>
 <body>
 
   <canvas id="confetti-canvas"></canvas>
-  <div id="music-hint">🎵 Tap anywhere for music</div>
   <audio id="bg-audio" loop>
     <source src="audio.m4a" type="audio/mp4" />
   </audio>
@@ -305,15 +289,18 @@
       burst();
       loop();
       setInterval(burst, 8000);
+      const audio = document.getElementById('bg-audio');
+      audio.play().catch(() => {});
     }
 
     function unlockAudio() {
       const audio = document.getElementById('bg-audio');
-      audio.play().then(() => {
-        document.getElementById('music-hint').style.display = 'none';
-        document.removeEventListener('touchstart', unlockAudio);
-        document.removeEventListener('click', unlockAudio);
-      }).catch(() => {});
+      if (audio.paused) {
+        audio.play().then(() => {
+          document.removeEventListener('touchstart', unlockAudio);
+          document.removeEventListener('click', unlockAudio);
+        }).catch(() => {});
+      }
     }
 
     window.addEventListener('load', startExperience);
