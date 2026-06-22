@@ -19,36 +19,6 @@
       touch-action: manipulation;
     }
 
-    #tap-screen {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      cursor: pointer;
-    }
-
-    #tap-screen .tap-emoji {
-      font-size: 80px;
-      animation: pulse 1.2s ease-in-out infinite;
-    }
-
-    #tap-screen .tap-text {
-      color: #fff;
-      font-size: 26px;
-      margin-top: 20px;
-      text-align: center;
-      padding: 0 30px;
-      opacity: 0.9;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-    }
 
     canvas#confetti-canvas {
       position: fixed;
@@ -189,11 +159,6 @@
 </head>
 <body>
 
-  <div id="tap-screen" onclick="startExperience()">
-    <div class="tap-emoji">👨‍👦</div>
-    <div class="tap-text">Tap to open your Father's Day surprise! 🎉</div>
-  </div>
-
   <canvas id="confetti-canvas"></canvas>
   <audio id="bg-audio" loop>
     <source src="audio.m4a" type="audio/mp4" />
@@ -322,13 +287,14 @@
     }
 
     function startExperience() {
-      document.getElementById('tap-screen').style.display = 'none';
       const audio = document.getElementById('bg-audio');
       audio.play().catch(() => {});
       burst();
       loop();
       setInterval(burst, 8000);
     }
+
+    window.addEventListener('load', startExperience);
   </script>
 </body>
 </html>
